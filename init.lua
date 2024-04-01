@@ -247,7 +247,6 @@ require('lazy').setup({
 
   {
     'nvim-telescope/telescope-symbols.nvim',
-    require('telescope.builtin').symbols { sources = { 'emoji' } },
   },
 
   -- "gc" to comment visual regions/lines
