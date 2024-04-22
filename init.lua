@@ -157,6 +157,9 @@ vim.opt.scrolloff = 10
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+vim.keymap.set('n', '<leader>y', '"+y')
+vim.keymap.set('v', '<leader>y', '"+y')
+
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -245,8 +248,25 @@ require('lazy').setup({
     -- this is equalent to setup({}) function
   },
 
+  -- telescope emoji selector
   {
     'nvim-telescope/telescope-symbols.nvim',
+  },
+
+  {
+    'ggandor/leap.nvim',
+    config = function(_, opts)
+      local leap = require 'leap'
+      for k, v in pairs(opts) do
+        leap.opts[k] = v
+      end
+      leap.add_default_mappings(true)
+      vim.keymap.del({ 'x', 'o' }, 'x')
+      vim.keymap.del({ 'x', 'o' }, 'X')
+      vim.keymap.set('n', 's', function()
+        require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
+      end)
+    end,
   },
 
   -- "gc" to comment visual regions/lines
@@ -565,7 +585,9 @@ require('lazy').setup({
             },
           },
         },
-        gleam = {},
+        gleam = {
+          require('lspconfig').gleam.setup {},
+        },
         htmx = {
           filetypes = { 'html', 'htmldjango', 'templ' },
         },
