@@ -595,6 +595,13 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               allFeatures = true,
+              procMacro = {
+                ignored = {
+                  leptos_macro = {
+                    'server',
+                  },
+                },
+              },
             },
           },
         },
@@ -607,6 +614,44 @@ require('lazy').setup({
         emmet_ls = {},
         cssls = {},
         glsl_analyzer = {},
+        asm_lsp = {
+          cmd = { 'asm-lsp' },
+        },
+        tailwindcss = {
+          on_attach = function(client, bufnr)
+            if vim.bo.filetype == 'rust' then
+              client.config.settings = client.config.settings or {}
+              client.config.settings.includeLanguages = client.config.settings.includeLanguages or {}
+              client.config.settings.includeLanguages.rust = 'html'
+              client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
+            end
+          end,
+          filetypes = { 'html', 'css', 'htmldjango', 'templ', 'rust' },
+          settings = {
+            tailwindCSS = {
+              includeLanguages = {
+                rust = 'html',
+              },
+              lint = {
+                cssConflict = 'warning',
+                invalidApply = 'error',
+                invalidConfigPath = 'error',
+                invalidScreen = 'error',
+                invalidTailwindDirective = 'error',
+                invalidVariant = 'error',
+                recommendedVariantOrder = 'warning',
+              },
+              validate = true,
+              experimental = {
+                classRegex = {
+                  [[class\s*=\s*"(.*?)"]], -- Standard class attribute
+                  [[class:\s*"([^"]*)"]], -- Leptos-style class prop in Rust
+                  [[class:\s*(\w+)]], -- Matches `class: bg-blue-100` format
+                },
+              },
+            },
+          },
+        },
         -- gdscript = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -797,6 +842,18 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
         },
+      }
+      require('cmp').setup {
+        formatting = { format = require('tailwindcss-colorizer-cmp').formatter },
+      }
+    end,
+  },
+
+  {
+    'roobert/tailwindcss-colorizer-cmp.nvim',
+    config = function()
+      require('tailwindcss-colorizer-cmp').setup {
+        color_square_width = 2,
       }
     end,
   },
