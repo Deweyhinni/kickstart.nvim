@@ -229,7 +229,12 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  {
+    'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+    config = function()
+      vim.o.tabstop = 4
+    end,
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -612,8 +617,30 @@ require('lazy').setup({
           filetypes = { 'html', 'htmldjango', 'templ' },
         },
         emmet_ls = {},
+        eslint = {
+          filetypes = {
+            'javascript',
+            'javascriptreact',
+            'javascript.jsx',
+            'typescript',
+            'typescriptreact',
+            'typescript.tsx',
+            'vue',
+            'svelte',
+            'astro',
+            'html',
+            'htmldjango',
+          },
+        },
         cssls = {},
         glsl_analyzer = {},
+        wgsl_analyzer = {
+          setup = function()
+            require('lspconfig').wgsl_analyzer.setup {}
+          end,
+          cmd = { 'wgsl_analyzer' },
+          filetypes = { 'wgsl' },
+        },
         asm_lsp = {
           cmd = { 'asm-lsp' },
         },
